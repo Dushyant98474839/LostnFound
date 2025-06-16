@@ -1,0 +1,29 @@
+user table
+userid
+username
+email
+password
+profile pic
+govt verification id
+points
+
+
+Post table
+post id
+location
+lat
+lang
+city
+country
+userid
+comments
+type(L/F)
+likes
+claim(bool)
+claimby(userid)
+
+comments
+commentid
+postid
+replyingto
+userid

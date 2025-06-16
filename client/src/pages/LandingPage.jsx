@@ -1,9 +1,23 @@
-import React from "react"
-import Footer from "../components/Footer"
-import { useNavigate } from "react-router-dom"
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { createClient } from "@supabase/supabase-js";
+import Footer from "../components/Footer";
 
-function LandingPage(){
-    const navigate=useNavigate();
+const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
+
+function LandingPage() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        navigate("/home");
+      }
+    };
+
+    checkSession();
+  }, [navigate]);
     return(
         <>  
         <div className="h-[95vh] bg-gray-800">
