@@ -28,7 +28,21 @@ const formItemLayout = {
   },
 };
 
+
+
 const CreatePost = () => {
+
+  useEffect(() => {
+      const checkSession = async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          
+        }
+      };
+  
+      checkSession();
+    }, []);
+
   const [form] = Form.useForm();
   const [condition, setCondition] = useState('lost');
   const [selectedCountryCode, setSelectedCountry] = useState(undefined);
@@ -70,7 +84,7 @@ const CreatePost = () => {
 
       <Navbar />
       <div className='flex flex-col mt-14 items-center justify-center w-full'>
-        <h1 className='text-xl font-semibold'>Please Enter the Details</h1>
+        <h1 className='text-xl mb-10 font-semibold'>Please Enter the Details</h1>
         <Form
           className='shadow-md'
           {...formItemLayout}
@@ -94,7 +108,7 @@ const CreatePost = () => {
           </Form.Item>
 
           <Form.Item label="Description" name="Description">
-            <Input.TextArea />
+            <Input.TextArea style={{height:200}}/>
           </Form.Item>
           
           <Form.Item label="Address" name="Address">

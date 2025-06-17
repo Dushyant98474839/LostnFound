@@ -27,3 +27,12 @@ commentid
 postid
 replyingto
 userid
+
+
+requirements:
+1) if user profile not finished or session not complete then cant create post, claim, found, comment, reply
+2) terms and conditions page
+3) notifications
+4) comments, reply
+5) mark location on map
+6) resolved page
