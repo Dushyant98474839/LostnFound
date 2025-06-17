@@ -9,7 +9,7 @@ function Home() {
       <Navbar />
       <div className="flex flex-col md:flex-row w-full justify-between gap-4 p-4 flex-grow">
         
-        {/* Lost Items Column */}
+        {/* lost items */}
         <div className="w-full md:w-1/2 flex flex-col h-full">
           <h1 className="text-center font-semibold border border-gray-800 p-2 mb-2">
             Lost Items
@@ -21,8 +21,8 @@ function Home() {
             ))}
           </div>
         </div>
-
-        {/* Found Items Column */}
+        
+        {/* found items */}
         <div className="w-full md:w-1/2 flex flex-col h-full">
           <h1 className="text-center font-semibold border border-gray-800 p-2 mb-2">
             Found Items
