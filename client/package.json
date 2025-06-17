@@ -16,6 +16,7 @@
     "@tailwindcss/vite": "^4.1.10",
     "antd": "^5.26.1",
     "bootstrap": "^5.3.6",
+    "country-state-city": "^3.2.1",
     "lucide-react": "^0.515.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

@@ -7,6 +7,7 @@ import AuthPage from './pages/AuthPage'
 import { useEffect} from "react";
 import { createClient } from "@supabase/supabase-js";
 import Home from './pages/Home'
+import CreatePost from './pages/CreatePost'
 
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
 
@@ -29,6 +30,7 @@ function App() {
               <Route path="login" element={<AuthPage />} />
               <Route path="signup" element={<AuthPage />} />
               <Route path="home" element ={<Home/>}/>
+              <Route path="createpost" element={<CreatePost/>}/>
           </Routes>
         </Layout>
       </BrowserRouter>

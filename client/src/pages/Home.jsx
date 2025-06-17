@@ -27,7 +27,7 @@ function Home() {
           <h1 className="text-center font-semibold border border-gray-800 p-2 mb-2">
             Found Items
           </h1>
-          <Filter2 className="w-full mb-2" />
+          <Filter2 className="w-full mb-2 " />
           <div className="flex-grow overflow-y-auto bg-white rounded p-2 shadow h-0">
             {Array.from({ length: 10 }).map((_, i) => (
               <Cards key={i} />

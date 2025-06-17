@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
 import { Menu, X } from "lucide-react";
-import { UserOutlined, BellOutlined } from "@ant-design/icons";
+import { UserOutlined, BellOutlined , PlusSquareOutlined} from "@ant-design/icons";
 
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
 
@@ -24,10 +24,9 @@ export default function Navbar() {
     }, []);
 
 
-
     const navItems = session
         ? [
-            { label: "Home", path: "/" },
+            { label: "Home", path: "/home" },
             { label: "About", path: "/about" },
             { label: "Contact", path:"/contact"},
             // { label: "Report Lost", path: "/report-lost" },
@@ -51,8 +50,9 @@ export default function Navbar() {
             <button className="lg:hidden" onClick={() => setMenuOpen(!menuOpen)}>
                 {menuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
-
+            
             <ul className="hidden lg:flex gap-6 items-center">
+                <PlusSquareOutlined className="text-xl hover:cursor-pointer" onClick={()=>navigate('/createpost')}/>
                 {navItems.map((item) => (
                     <li key={item.path}>
                         <Link to={item.path} className="hover:text-blue-400 transition">
@@ -71,8 +71,12 @@ export default function Navbar() {
 
             {menuOpen && (
                 <ul className="lg:hidden absolute top-16 left-0 w-full bg-black px-4 py-2 flex flex-col gap-3">
+                    <div className="flex flex-row gap-4">
+
+                    <PlusSquareOutlined className="text-xl hover:cursor-pointer"/>
                     <UserOutlined className="hover:cursor-pointer" />
                     <BellOutlined className="hover:cursor-pointer" />
+                    </div>
                     {navItems.map((item) => (
                         <li key={item.path}>
                             <Link to={item.path} onClick={() => setMenuOpen(false)} className="block text-white hover:text-blue-400">

@@ -51,7 +51,9 @@ const Cards = () => {
           )}
 
           <div>
-            <h1 className='my-4 text-xl'>location (lat, long)</h1>
+            <h1 className='mt-4 text-xl'>location (lat, long)</h1>
+            <h1 className='mb-2 text-xl'>time</h1>
+            
             <EnvironmentOutlined className='hover:cursor-pointer text-xl' />
           </div>
         </div>

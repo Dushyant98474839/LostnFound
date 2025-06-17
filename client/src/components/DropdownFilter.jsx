@@ -1,28 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Select, Dropdown, Typography, Space } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
-import { Dropdown, Space, Typography } from 'antd';
+import { Country, State, City } from 'country-state-city';
+
+const { Option } = Select;
 
 const items = [
-  {
-    key: '0',
-    label: 'Category',
-  },
-  {
-    key: '1',
-    label: 'Item 1',
-  },
-  {
-    key: '2',
-    label: 'Item 2',
-  },
-  {
-    key: '3',
-    label: 'Item 3',
-  },
+  { key: '0', label: 'Category' },
+  { key: '1', label: 'Item 1' },
+  { key: '2', label: 'Item 2' },
+  { key: '3', label: 'Item 3' },
 ];
 
-function DropdownFilter(className="") {
-  const [category, setCategory] = useState('Category');
+export function DropdownFilter() {
+  const [category, setCategory] = React.useState('Category');
 
   const handleMenuClick = (e) => {
     const selectedItem = items.find((item) => item.key === e.key);
@@ -32,88 +23,87 @@ function DropdownFilter(className="") {
   };
 
   return (
-    <>
-      <Dropdown className={`${className}`}
-        menu={{
-          items,
-          selectable: true,
-          defaultSelectedKeys: ['0'],
-          onClick: handleMenuClick,
-        }}
-      >
-        <Typography.Link onClick={(e) => e.preventDefault()}>
-          <Space>
-            {category}
-            <DownOutlined />
-          </Space>
-        </Typography.Link>
-      </Dropdown>
-    </>
+    <Dropdown
+      menu={{
+        items,
+        selectable: true,
+        defaultSelectedKeys: ['0'],
+        onClick: handleMenuClick,
+      }}
+
+    >
+      <Typography.Link onClick={(e) => e.preventDefault()}>
+        <Space>
+          {category}
+          <DownOutlined />
+        </Space>
+      </Typography.Link>
+    </Dropdown>
   );
 }
 
+export function CountryDropdown({ value, onChange }) {
+  const countryOptions = Country.getAllCountries().map((country) => ({
+    label: country.name,
+    value: country.isoCode,
+  }));
 
-
-import { Select } from 'antd';
-
-const { Option } = Select;
-
-const cities = [
-  "Mumbai", "Delhi", "Bengaluru", "Hyderabad", "Ahmedabad",
-  "Chennai", "Kolkata", "Pune", "Jaipur", "Lucknow"
-];
-
-function CityDropdown({ value, onChange }) {
   return (
     <Select
       showSearch
-      placeholder="Select a city"
-      optionFilterProp="children"
+      placeholder="Select Country"
       value={value}
       onChange={onChange}
-      className=""
+      options={countryOptions}
+      className="min-w-[20%]"
       filterOption={(input, option) =>
-        option.children.toLowerCase().includes(input.toLowerCase())
+        option.label.toLowerCase().includes(input.toLowerCase())
       }
-    >
-      {cities.map((city) => (
-        <Option key={city} value={city}>
-          {city}
-        </Option>
-      ))}
-    </Select>
+    />
   );
 }
 
+export function StateDropdown({ selectedCountryCode, value, onChange }) {
+  const stateOptions = State.getStatesOfCountry(selectedCountryCode || "").map((state) => ({
+    label: state.name,
+    value: state.isoCode,
+  }));
 
-const { Option2 } = Select;
-
-const countries = [
-  "India", "United States", "United Kingdom", "Canada", "Australia",
-  "Germany", "France", "Japan", "China", "Brazil", "South Africa"
-];
-
-function CountryDropdown({ value, onChange }) {
   return (
     <Select
       showSearch
-      placeholder="Select a country"
-      optionFilterProp="children"
+      placeholder="Select State"
       value={value}
       onChange={onChange}
-      className=""
+      options={stateOptions}
+      disabled={!selectedCountryCode}
+      className="min-w-[20%]"
       filterOption={(input, option) =>
-        option.children.toLowerCase().includes(input.toLowerCase())
+        option.label.toLowerCase().includes(input.toLowerCase())
       }
-    >
-      {countries.map((country) => (
-        <Option key={country} value={country}>
-          {country}
-        </Option>
-      ))}
-    </Select>
+    />
   );
 }
 
 
-export {DropdownFilter,CityDropdown,CountryDropdown};
+export function CityDropdown({ selectedCountryCode, selectedStateCode, value, onChange }) {
+  const cityOptions = City.getCitiesOfState(selectedCountryCode || "", selectedStateCode || "").map((city) => ({
+    label: city.name,
+    value: city.name,
+  }));
+
+  return (
+    <Select
+      showSearch
+      placeholder="Select City"
+      value={value}
+      onChange={onChange}
+      options={cityOptions}
+      disabled={!selectedStateCode}
+      className="min-w-[20%]"
+      filterOption={(input, option) =>
+        option.label.toLowerCase().includes(input.toLowerCase())
+      }
+    />
+  );
+}
