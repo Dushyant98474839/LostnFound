@@ -8,6 +8,8 @@ import { useEffect} from "react";
 import { createClient } from "@supabase/supabase-js";
 import Home from './pages/Home'
 import CreatePost from './pages/CreatePost'
+import { AuthProvider } from './utils/AppContext'
+import ProfilePage from './pages/ProfilePage'
 
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
 
@@ -22,6 +24,7 @@ function App() {
 
   return (
     <>
+    <AuthProvider>
       <BrowserRouter>
         <Layout>
 
@@ -31,9 +34,11 @@ function App() {
               <Route path="signup" element={<AuthPage />} />
               <Route path="home" element ={<Home/>}/>
               <Route path="createpost" element={<CreatePost/>}/>
+              <Route path="profile" element={<ProfilePage/>}/>
           </Routes>
         </Layout>
       </BrowserRouter>
+    </AuthProvider>
     </>
   )
 }

@@ -10,6 +10,7 @@ points
 
 Post table
 post id
+post category
 location
 lat
 lang
@@ -28,6 +29,11 @@ postid
 replyingto
 userid
 
+Transaction table
+
+claimns table//found table
+postid, user_id
+
 
 requirements:
 1) if user profile not finished or session not complete then cant create post, claim, found, comment, reply
@@ -36,3 +42,14 @@ requirements:
 4) comments, reply
 5) mark location on map
 6) resolved page
+7) add google auth
+8) pagination
+9) person clicks on claim/found/chat button on homepage, post page opens up,
+   post page shows, claims list for found items, and found list for lost items, also comments.
+10) navbar, will have a claims option to see user claimed posts. Clicking on the post again takes to the post page,
+11) User can unclaim/unfound, database will have to be updated.
+12) On claiming/founding, notifications will be sent to both the involved parties.
+13) for found items, the poster user will have the option to resolve post by selecting a particular user to whom he handed over the item.
+14) users can delete posts.
+15) navbar will have resolved option, to see resolved posts, it will only contain, found category items, it will also show the user to whom item was handed over.
+16) when someone claims/founds, display email address to mail to.

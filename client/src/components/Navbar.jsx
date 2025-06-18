@@ -63,7 +63,7 @@ export default function Navbar() {
                 {session ?
                     <>
                     <BellOutlined className="hover:cursor-pointer" />
-                    <UserOutlined className="hover:cursor-pointer" />
+                    <UserOutlined className="hover:cursor-pointer" onClick={()=>navigate('/profile')} />
                     </> : ""
                 }
             </ul>

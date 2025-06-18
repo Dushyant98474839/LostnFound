@@ -47,7 +47,9 @@ function AuthPage() {
             if (error) {
                 return notify.error(error.message)
             }
-            notify.success("Check your email to confirm signup");
+            else {
+                return notify.success("Check your email to confirm signup");
+            }
         }
         else if (!issignup) {
             const { data, error } = await supabase.auth.signInWithPassword({
@@ -58,7 +60,7 @@ function AuthPage() {
                 return notify.error(error.message)
             }
             notify.success("Login successful");
-            navigate("/"); 
+            navigate("/");
         }
     }
 

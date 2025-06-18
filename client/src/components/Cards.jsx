@@ -1,13 +1,30 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { EditOutlined, EllipsisOutlined, SettingOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import { Avatar, Card, Button, Carousel } from 'antd';
+import { createClient } from '@supabase/supabase-js';
 
+const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
 const { Meta } = Card;
 
-const Cards = () => {
-  const [status, setStatus] = useState('lost');
+const Cards = ({obj}) => {
+  // const [status, setStatus] = useState('lost');
+  const [username, setUsername]=useState(undefined)
 
-  // List of image URLs
+  useEffect(()=>{
+    const fetchUsername=async()=>{
+      const {data,error}=await supabase.from("profiles").select("*").eq("id",obj.user_id).single();
+      if(data){
+        // console.log(data)
+        setUsername(data.username)
+      }
+      else{
+        console.log(error)
+        return null
+      }
+    }
+    fetchUsername()
+  },[])
+
   const images = [
     "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
     "https://images.moneycontrol.com/static-mcnews/2024/06/20240613162128_Shipping-Corporation-of-India.jpg?impolicy=website&width=770&height=431",
@@ -18,7 +35,7 @@ const Cards = () => {
     <div className="my-4 w-full shadow-md">
       <div className='w-full flex flex-row gap-4 items-center p-3'>
         <Avatar className="border border-gray-200" src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />
-        <h1 className='text-lg font-semibold'>Dushyant</h1>
+        <h1 className='text-lg font-semibold'>{username}</h1>
       </div>
 
       <Card
@@ -33,16 +50,16 @@ const Cards = () => {
         actions={[]}
       >
         <Meta
-          title="Item"
-          description="This is the description"
+          title={obj.title}
+          description={obj.description}
         />
 
         <div className='flex flex-row items-start justify-between mt-4'>
 
-          {status === 'lost' ? (
+          {obj.type === 'lost' && obj.award? (
             <div>
               <h1 className='text-lg my-4'>
-                <span className='font-semibold'>Award:</span> $900
+                <span className='font-semibold text-gray-700'>Award: </span>{obj.award}
               </h1>
               <Button type="primary">Found</Button>
             </div>
@@ -51,8 +68,8 @@ const Cards = () => {
           )}
 
           <div>
-            <h1 className='mt-4 text-xl'>location (lat, long)</h1>
-            <h1 className='mb-2 text-xl'>time</h1>
+            <h1 className='mt-4 text-xl'>{`${obj.location},${(obj.city)?obj.city:""}, ${obj.state}, ${obj.country}, ${(obj.pincode)?obj.pincode:""}`}</h1>
+            <h1 className='mb-2 text-xl'>{obj.date}</h1>
             
             <EnvironmentOutlined className='hover:cursor-pointer text-xl' />
           </div>
