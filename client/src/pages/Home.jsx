@@ -71,7 +71,7 @@ function Home() {
             {postsList.map((obj, i)=>{
               if(obj.type=='found'){
                 // console.log("ffffffff",obj)
-                return <Cards key={i} obj={obj} />
+                return <Cards key={i} obj={obj} displayOptions={false} />
               }
               
             })}

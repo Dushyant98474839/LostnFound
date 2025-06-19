@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { EditOutlined, EllipsisOutlined, SettingOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import { EditOutlined, EllipsisOutlined, SettingOutlined, EnvironmentOutlined, LogoutOutlined, DeleteOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { Avatar, Card, Button, Carousel, Modal } from 'antd';
 import { createClient } from '@supabase/supabase-js';
 import {MapsCards} from './Maps';
+import { useCustomMessage } from '../utils/feedback';
 
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
 const { Meta } = Card;
 
-const Cards = ({ obj }) => {
+const Cards = ({ obj, displayOptions }) => {
   // const [status, setStatus] = useState('lost');
   const [username, setUsername] = useState(undefined)
   const [profilepic, setProfilePic] = useState();
   const [postImages, setPostImages] = useState([]);
   const [mapPin, setMapPin] = useState(false)
-
+  const {notify, contextHolder}=useCustomMessage();
   useEffect(() => {
     const fetchUsername = async () => {
       const { data, error } = await supabase.from("profiles").select("*").eq("id", obj.user_id).single();
@@ -57,6 +58,22 @@ const Cards = ({ obj }) => {
     fetchPostImages()
   }, [])
 
+  const handleDelete=async(e)=>{
+    const {error}=await supabase.from("posts").delete().eq("id",obj.id);
+    if(error){
+      notify.error(error.message)
+    }
+    else{
+      notify.success("Post Successfully deleted")
+      setTimeout(
+        ()=>{
+
+          window.location.reload()
+        },1000
+      )
+    }
+  }
+
   // const images = [
   //   "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
   //   "https://images.moneycontrol.com/static-mcnews/2024/06/20240613162128_Shipping-Corporation-of-India.jpg?impolicy=website&width=770&height=431",
@@ -65,9 +82,21 @@ const Cards = ({ obj }) => {
 
   return (
     <div className="my-4 p-4 w-full shadow-md rounded-lg">
-      <div className='w-full flex flex-row gap-4 items-center p-3'>
+      <div className='w-full flex flex-row justify-between items-center p-3'>
+        <div className='flex flex-row gap-2'>
+
         <Avatar className="border border-gray-200" src={profilepic} />
         <h1 className='text-lg font-semibold'>{username}</h1>
+        </div>
+        {displayOptions?
+        <div className='flex flex-row gap-2'>
+          <CheckCircleOutlined className="hover:cursor-pointer "/>
+          {!obj.resolved?
+          <DeleteOutlined className="hover:cursor-pointer" onClick={handleDelete} />:""
+          }
+        </div>:""
+        }
+      
       </div>
 
       <Card 
@@ -130,7 +159,7 @@ const Cards = ({ obj }) => {
               destroyOnHidden
             >
               <div style={{ height: "700px" , width:"100%"}}>
-                <MapsCards  lng={(obj.longitude)?obj.longitude:"51.505"} lat={obj.latitude?obj.latitude:"-0.09"}/>
+                <MapsCards  lng={(obj.longitude)?obj.longitude:"28.5965800646348"} lat={obj.latitude?obj.latitude:"77.187252046424"}/>
               </div>
             </Modal>
           </div>

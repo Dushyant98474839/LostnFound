@@ -40,7 +40,6 @@ requirements:
 2) terms and conditions page
 3) notifications
 4) comments, reply
-5) mark location on map
 6) resolved page
 7) add google auth
 8) pagination
@@ -53,3 +52,5 @@ requirements:
 14) users can delete posts.
 15) navbar will have resolved option, to see resolved posts, it will only contain, found category items, it will also show the user to whom item was handed over.
 16) when someone claims/founds, display email address to mail to.
+17) found/claim button not visible to the user posted
+18) post created by user should show resolve, delete, but once resolved it shouldn't show delete.

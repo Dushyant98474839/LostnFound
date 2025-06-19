@@ -193,7 +193,7 @@ function ProfilePage() {
                         </Form>
                     </div>
                 ) : (
-                    <h1>Please Create an Account</h1>
+                    <h1>Please Create an Account {session}</h1>
                 )}
             </div>
         </>

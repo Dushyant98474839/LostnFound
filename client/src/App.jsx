@@ -10,6 +10,7 @@ import Home from './pages/Home'
 import CreatePost from './pages/CreatePost'
 import { AuthProvider } from './utils/AppContext'
 import ProfilePage from './pages/ProfilePage'
+import UserPosts from './pages/UserPosts'
 
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
 
@@ -35,6 +36,7 @@ function App() {
               <Route path="home" element ={<Home/>}/>
               <Route path="createpost" element={<CreatePost/>}/>
               <Route path="profile" element={<ProfilePage/>}/>
+              <Route path="my-posts" element={<UserPosts/>}/>
           </Routes>
         </Layout>
       </BrowserRouter>

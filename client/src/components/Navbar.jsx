@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
 import { Menu, X } from "lucide-react";
-import { UserOutlined, BellOutlined , PlusSquareOutlined} from "@ant-design/icons";
+import { UserOutlined, BellOutlined , PlusSquareOutlined, LogoutOutlined} from "@ant-design/icons";
 
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
 
@@ -23,6 +23,11 @@ export default function Navbar() {
         return () => listener?.subscription?.unsubscribe();
     }, []);
 
+    const handleSignOut=async()=>{
+        const {error} = await supabase.auth.signOut()
+        navigate('/')
+        
+    }
 
     const navItems = session
         ? [
@@ -64,6 +69,7 @@ export default function Navbar() {
                     <>
                     <BellOutlined className="hover:cursor-pointer" />
                     <UserOutlined className="hover:cursor-pointer" onClick={()=>navigate('/profile')} />
+                        <LogoutOutlined className="hover:cursor-pointer"  onClick={handleSignOut}/>
                     </> : ""
                 }
             </ul>
