@@ -18,21 +18,22 @@ function Home() {
   const [postsList, setPostsList]=useState([{}]);
   const { notify, contextHolder } = useCustomMessage();
 
-
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const { data, error } = await supabase.from('posts').select('*');
         if (error) throw error;
-        setPostsList(data || []);
-        console.log(data)
+        const sorted = data?.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        setPostsList(sorted || []);
+        // console.log(data)
       } catch (error) {
         console.error('Error fetching posts:', error.message);
         notify.error('Error fetching Posts');
       }
     };
-
     fetchPosts();
+
+    
   }, []);
 
   return (
@@ -47,10 +48,13 @@ function Home() {
           </h1>
           <Filter2 className="w-full mb-2" />
           <div className="flex-grow overflow-y-auto bg-white rounded p-2 shadow h-0">
+            <div className='grid grid-cols-2'>
+
             {postsList.map((obj, i)=>{
               if(obj.type=='lost')
-              return <Cards key={i} obj={obj} />
+                return <Cards key={i} obj={obj} />
             })}
+            </div>
           </div>
         </div>
         
@@ -62,13 +66,16 @@ function Home() {
           <Filter2 className="w-full mb-2 " />
           {/* <div className="flex-grow overflow-y-auto bg-white rounded p-2 shadow h-0"> */}
             <div className="flex-grow overflow-y-auto bg-white rounded p-2 shadow h-0">
+              <div className='grid grid-cols-2 gap-2'>
+
             {postsList.map((obj, i)=>{
               if(obj.type=='found'){
-                console.log("ffffffff",obj)
+                // console.log("ffffffff",obj)
                 return <Cards key={i} obj={obj} />
               }
               
             })}
+            </div>
           {/* </div> */}
           </div>
         </div>

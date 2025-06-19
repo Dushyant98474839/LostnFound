@@ -17,9 +17,11 @@
     "antd": "^5.26.1",
     "bootstrap": "^5.3.6",
     "country-state-city": "^3.2.1",
+    "leaflet": "^1.9.4",
     "lucide-react": "^0.515.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-leaflet": "^5.0.0-rc.2",
     "react-phone-number-input": "^3.4.12",
     "tailwindcss": "^4.1.10"
   },
