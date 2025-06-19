@@ -42,6 +42,9 @@ function AuthPage() {
             const { data, error } = await supabase.auth.signUp({
                 email: inputs.username,
                 password: inputs.password,
+                options: {
+      emailRedirectTo: 'https://retreiv.netlify.app/home',
+    },
             })
 
             if (error) {
