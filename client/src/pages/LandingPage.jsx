@@ -32,7 +32,7 @@ function LandingPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white font-sans">
       {/* Navbar */}
       <header className="flex justify-between items-center px-6 py-4 bg-black shadow-md sticky top-0 z-10">
-        <h1 className="text-3xl font-bold italic text-white">LostNFound</h1>
+        <h1 className="text-3xl font-bold text-white">Retreiv</h1>
         <div className="space-x-4">
           <button
             onClick={() => navigate("/login")}
