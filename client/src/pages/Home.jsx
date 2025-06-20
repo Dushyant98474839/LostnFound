@@ -53,8 +53,8 @@ function Home() {
             <div className='grid grid-cols-2'>
 
             {postsList.map((obj, i)=>{
-              if(obj.type=='lost')
-                return <Cards key={i} obj={obj} details={obj.user_id==session.user.id}/>
+              if(obj.type=='lost'&&!obj.resolved)
+                return <Cards key={i} obj={obj} details={obj.user_id==session?.user?.id}/>
             })}
             </div>
           </div>
@@ -71,9 +71,9 @@ function Home() {
               <div className='grid grid-cols-2 gap-2'>
 
             {postsList.map((obj, i)=>{
-              if(obj.type=='found'){
+              if(obj.type=='found'&&!obj.resolved){
                 // console.log("ffffffff",obj)
-                return <Cards key={i} obj={obj} displayOptions={false} details={obj.user_id==session.user.id} />
+                return <Cards key={i} obj={obj} displayOptions={false} details={obj.user_id==session?.user?.id} />
               }
               
             })}

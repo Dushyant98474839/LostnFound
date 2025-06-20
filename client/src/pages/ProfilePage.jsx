@@ -32,20 +32,32 @@ function ProfilePage() {
         } else if (error) {
             notify.error("Error fetching Profile");
         }
+
+        const { data: imageList, error: imgError } = await supabase
+                        .storage
+                        .from("profile-pics")
+                        .list(`${session.user.id}`);
+
+                    let imageUrl = null;
+                    console.log("img", imageList)
+                    if (!imgError && imageList?.length > 0) {
+                        imageUrl = await Promise.all(
+                            imageList.map((img) => {
+                                const { data: publicUrl } = supabase
+                                    .storage
+                                    .from("profile-pics")
+                                    .getPublicUrl(`${session.user.id}/${img.name}`);
+                                setPubUrl(publicUrl.publicUrl)
+                            })
+                        );
+                    }
+                    
     };
 
     useEffect(() => {
         if (session?.user) {
             fetchProfile();
 
-            const { data: publicUrl } = supabase
-                .storage
-                .from('profile-pics')
-                .getPublicUrl(`${session.user.id}/profile.png`);
-
-            if (publicUrl?.publicUrl) {
-                setPubUrl(`${publicUrl.publicUrl}?t=${Date.now()}`);
-            }
         }
     }, [session]);
 
@@ -103,16 +115,20 @@ function ProfilePage() {
         }
 
         setLoadingButton(false);
+        setTimeout(()=>
+    
+        window.location.reload()
+    )
     };
 
     const uploadFile = async (file, userId) => {
         let newfile=await convertToPNG(file);
         const ext = file.name.split('.').pop().toLowerCase();
-        const filePath = `${userId}/profile_image_${i}.${ext}`;
+        const filePath = `${userId}/profile_image_.${ext}`;
 
         const { error } = await supabase.storage
             .from('profile-pics')
-            .upload(filePath, newfile, {
+            .upload(filePath, file, {
                 cacheControl: '3600',
                 upsert: true,
             });
@@ -183,7 +199,7 @@ function ProfilePage() {
                                         Click or drag file to this area to upload
                                     </p>
                                     <p className="ant-upload-hint">
-                                        Support for a single image file. Strictly prohibited from uploading company data.
+                                        Support for a single image file.
                                     </p>
                                 </Dragger>
                             </Form.Item>

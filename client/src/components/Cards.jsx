@@ -5,11 +5,13 @@ import { createClient } from '@supabase/supabase-js';
 import { MapsCards } from './Maps';
 import { useCustomMessage } from '../utils/feedback';
 import ClaimFoundForm from './ClaimFoundForm';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../utils/AppContext';
 
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
 const { Meta } = Card;
 
-const Cards = ({ obj, displayOptions, details }) => {
+const Cards = ({ obj, displayOptions, details, userposts, canBeDeleted }) => {
   // const [status, setStatus] = useState('lost');
   const [username, setUsername] = useState(undefined)
   const [profilepic, setProfilePic] = useState();
@@ -17,6 +19,8 @@ const Cards = ({ obj, displayOptions, details }) => {
   const [mapPin, setMapPin] = useState(false)
   const { notify, contextHolder } = useCustomMessage();
   const [showForm, setshowForm] = useState(false);
+  const navigate = useNavigate()
+  const { session, isLoggedIn, isProfileComplete } = useAuth();
 
   useEffect(() => {
     const fetchUsername = async () => {
@@ -88,7 +92,8 @@ const Cards = ({ obj, displayOptions, details }) => {
   // ];
 
   return (
-    <div className="my-4 p-4 w-full shadow-md rounded-lg">
+    <div className={`my-4 p-4 shadow-md rounded-lg ${userposts ? `w-full` : "w-full"}`}>
+      {contextHolder}
       <div className='w-full flex flex-row justify-between items-center p-3'>
         <div className='flex flex-row gap-2'>
 
@@ -97,9 +102,12 @@ const Cards = ({ obj, displayOptions, details }) => {
         </div>
         {displayOptions ?
           <div className='flex flex-row gap-2'>
-            <CheckCircleOutlined className="hover:cursor-pointer " />
-            {!obj.resolved ?
-              <DeleteOutlined className="hover:cursor-pointer" onClick={handleDelete} /> : ""
+            {
+              obj.resolved &&
+              <CheckCircleOutlined className="" />
+            }
+            {!obj.resolved &&
+              <DeleteOutlined className="hover:cursor-pointer" onClick={handleDelete} />
             }
           </div> : ""
         }
@@ -115,7 +123,7 @@ const Cards = ({ obj, displayOptions, details }) => {
                 key={index}
                 src={src}
                 alt={`Image ${index}`}
-                className="w-full h-48 object-contain rounded"
+                className={`w-full ${(userposts) ? `h-96` : `h-48`} object-contain rounded`}
               />
 
             ))}
@@ -131,7 +139,7 @@ const Cards = ({ obj, displayOptions, details }) => {
         <div className='flex flex-row justify-between mt-4 gap-8'>
 
           {details ?
-            <Button type="primary" onClick={() => setshowForm(true)}>Details</Button> : (obj.type == 'lost') ? (
+            <Button type="primary" onClick={() => navigate(`/my-posts/${obj.id}`)}>Details</Button> : (obj.type == 'lost') ? (
               <div>
                 {
                   obj.award && (
@@ -141,10 +149,18 @@ const Cards = ({ obj, displayOptions, details }) => {
                     </h1>
                   )
                 }
-                <Button type="primary" onClick={() => setshowForm(true)}>Found</Button>
+                <Button type="primary" onClick={() => {
+                  if (!session) return notify.error("You must be logged in.");
+                  if (!isProfileComplete) return notify.error("Please complete your profile.");
+                  setshowForm(true);
+                }}>Found</Button>
               </div>
             ) : (
-              <Button type="primary" onClick={() => setshowForm(true)}>Claim</Button>
+              <Button type="primary" onClick={() => {
+                if (!session) return notify.error("You must be logged in.");
+                if (!isProfileComplete) return notify.error("Please complete your profile.");
+                setshowForm(true);
+              }}>Claim</Button>
             )}
 
 
