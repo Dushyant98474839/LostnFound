@@ -45,7 +45,7 @@ function UserPosts() {
             <Cards
               key={i}
               obj={obj}
-              displayOptions={obj.user_id === session?.user?.id}
+              displayOptions={obj.user_id === session?.user?.id} details={true}
             />
           ))}
         </div>

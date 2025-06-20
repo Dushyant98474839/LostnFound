@@ -5,6 +5,7 @@ import Filter2 from '../components/Filter2'
 import { createClient } from "@supabase/supabase-js";
 import useNotification from 'antd/es/notification/useNotification';
 import { useCustomMessage } from '../utils/feedback';
+import { useAuth } from '../utils/AppContext';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -17,6 +18,7 @@ const supabase = createClient(
 function Home() {
   const [postsList, setPostsList]=useState([{}]);
   const { notify, contextHolder } = useCustomMessage();
+  const {session}=useAuth();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -52,7 +54,7 @@ function Home() {
 
             {postsList.map((obj, i)=>{
               if(obj.type=='lost')
-                return <Cards key={i} obj={obj} />
+                return <Cards key={i} obj={obj} details={obj.user_id==session.user.id}/>
             })}
             </div>
           </div>
@@ -71,7 +73,7 @@ function Home() {
             {postsList.map((obj, i)=>{
               if(obj.type=='found'){
                 // console.log("ffffffff",obj)
-                return <Cards key={i} obj={obj} displayOptions={false} />
+                return <Cards key={i} obj={obj} displayOptions={false} details={obj.user_id==session.user.id} />
               }
               
             })}

@@ -9,7 +9,7 @@ import ClaimFoundForm from './ClaimFoundForm';
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
 const { Meta } = Card;
 
-const Cards = ({ obj, displayOptions }) => {
+const Cards = ({ obj, displayOptions, details }) => {
   // const [status, setStatus] = useState('lost');
   const [username, setUsername] = useState(undefined)
   const [profilepic, setProfilePic] = useState();
@@ -43,23 +43,23 @@ const Cards = ({ obj, displayOptions }) => {
     fetchDP()
 
     const fetchPostImages = async () => {
-      const {data, error}=await supabase.storage.from('post-pics').list(`${obj.id}`,{
-        limit:100, offset:0
+      const { data, error } = await supabase.storage.from('post-pics').list(`${obj.id}`, {
+        limit: 100, offset: 0
       })
       // console.log(data)
-      if(error){
-       return notify.error(error.message)
+      if (error) {
+        return notify.error(error.message)
       }
-      
-        
-        const urllist=await Promise.all(data.map(async(file, i)=>{
-          let { data: publicUrl }=await supabase.storage.from('post-pics').getPublicUrl(`${obj.id}/${file.name}`)
-          console.log(publicUrl)
-          return `${publicUrl.publicUrl}`;
-        }))
 
-        setPostImages(urllist)
-      
+
+      const urllist = await Promise.all(data.map(async (file, i) => {
+        let { data: publicUrl } = await supabase.storage.from('post-pics').getPublicUrl(`${obj.id}/${file.name}`)
+        // console.log(publicUrl)
+        return `${publicUrl.publicUrl}`;
+      }))
+
+      setPostImages(urllist)
+
     };
 
     fetchPostImages()
@@ -130,21 +130,24 @@ const Cards = ({ obj, displayOptions }) => {
 
         <div className='flex flex-row justify-between mt-4 gap-8'>
 
-          {obj.type == 'lost' ? (
-            <div>
-              {
-                obj.award && (
+          {details ?
+            <Button type="primary" onClick={() => setshowForm(true)}>Details</Button> : (obj.type == 'lost') ? (
+              <div>
+                {
+                  obj.award && (
 
-                  <h1 className='text-lg my-4'>
-                    <span className='font-semibold text-gray-700'>Award: </span>{obj.award}
-                  </h1>
-                )
-              }
-              <Button type="primary" onClick={() => setshowForm(true)}>Found</Button>
-            </div>
-          ) : (
-            <Button type="primary" onClick={() => setshowForm(true)}>Claim</Button>
-          )}
+                    <h1 className='text-lg my-4'>
+                      <span className='font-semibold text-gray-700'>Award: </span>{obj.award}
+                    </h1>
+                  )
+                }
+                <Button type="primary" onClick={() => setshowForm(true)}>Found</Button>
+              </div>
+            ) : (
+              <Button type="primary" onClick={() => setshowForm(true)}>Claim</Button>
+            )}
+
+
 
           <div>
             <h1 className='mt-4 text-xl'>{`${obj.location},${(obj.city) ? obj.city : ""}, ${obj.state}, ${obj.country}, ${(obj.pincode) ? obj.pincode : ""}`}</h1>

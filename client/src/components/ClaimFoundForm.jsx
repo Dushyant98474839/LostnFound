@@ -1,7 +1,7 @@
 import { InboxOutlined } from '@ant-design/icons';
 import { createClient } from '@supabase/supabase-js';
-import { Form, Modal, Input, Upload, Button } from 'antd'
-import React, { useState } from 'react'
+import { Form, Modal, Input, Upload, Button, Avatar } from 'antd'
+import React, { useEffect, useState } from 'react'
 import { useAuth } from '../utils/AppContext';
 import { useCustomMessage } from '../utils/feedback';
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
@@ -20,22 +20,41 @@ const formItemLayout = {
 };
 
 
-function ClaimFoundForm({ status, post_id, user_id , type}) {
+function ClaimFoundForm({ status, post_id, user_id, type }) {
 
     const [form] = Form.useForm();
     const [isLoading, setisLoading] = useState(false);
     const [isSubmitted, setisSubmitted] = useState(false);
     const [imageListPost, setImageListPost] = useState([]);
     const { notify, contextHolder } = useCustomMessage()
-    const [isDisabled, setisDisabled]=useState(false)
+    const [isDisabled, setisDisabled] = useState(false)
+    const [usersList, setUsersList] = useState([])
+    const {session}=useAuth()
+
+    useEffect(() => {
+        const fetchUserClaims = async () => {
+            const { data, error } = await supabase.from("ClaimFound").select("*").eq("post_id", post_id);
+            if (error) {
+                return notify.error(error.message)
+            }
+            console.log(data)
+            const usersArr=await Promise.all(data.map(async(obj,i)=>{
+                const {data, error}=await supabase.from("profiles").select("*").eq("id",obj.user_id).single();
+                return data
+            }))
+            console.log("fdsfd,",usersArr)
+            setUsersList(usersArr)
+        }
+        fetchUserClaims()
+    }, [])
 
     const handleSubmit = async (values) => {
         setisLoading(true)
         setisDisabled(true)
         values.post_id = post_id
-        values.user_id = user_id
+        values.user_id = session.user.id
         values.image_count = imageListPost.length;
-        values.type=status
+        values.type = status
         delete values.Image;
         console.log(values)
 
@@ -51,14 +70,15 @@ function ClaimFoundForm({ status, post_id, user_id , type}) {
             setisDisabled(false)
             return notify.error('Failed to retrieve post ID');
         }
-        else{
+        else {
 
-            const {error}=await uploadFile(imageListPost, claim_id);
-            console.log(error)
-            if(error){
-                setisDisabled(false)
-               return  notify.error(error.message);
+            try {
+                await uploadFile(imageListPost, claim_id);
+            } catch (error) {
+                setisDisabled(false);
+                return notify.error(`Failed to upload images: ${error.message}`);
             }
+
         }
 
         notify.success('Post and images saved successfully!');
@@ -123,7 +143,7 @@ function ClaimFoundForm({ status, post_id, user_id , type}) {
 
 
     return (
-        <div>   
+        <div>
             {contextHolder}
             <div className='flex flex-col md:flex-row gap-8'>
 
@@ -178,6 +198,18 @@ function ClaimFoundForm({ status, post_id, user_id , type}) {
                 <div className='flex flex-col bg-white rounded-2xl shadow-sm p-4 w-[100%] md:w-[35%]'>
 
                     <h1 className='font-semibold text-center text-lg'>Other users who {status == "found" ? "claimed" : "found"}</h1>
+                    <div className='flex flex-col gap-2'>
+                        {usersList.map((obj, i) => {
+                            return (
+
+                                <div className='flex flex-row gap-2 items-center p-2 shadow-sm rounded'>
+                                    <Avatar className="border border-gray-200" src={`${import.meta.env.VITE_PROFILE_PIC_URL}${obj.profile_pic}`}/>
+                                    <h1 className='font'>{obj.username}</h1>
+
+                                </div>
+                            )
+                        })}
+                    </div>
 
                 </div>
             </div>
