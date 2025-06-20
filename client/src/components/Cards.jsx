@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { EditOutlined, EllipsisOutlined, SettingOutlined, EnvironmentOutlined, LogoutOutlined, DeleteOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { Avatar, Card, Button, Carousel, Modal } from 'antd';
 import { createClient } from '@supabase/supabase-js';
-import {MapsCards} from './Maps';
+import { MapsCards } from './Maps';
 import { useCustomMessage } from '../utils/feedback';
+import ClaimFoundForm from './ClaimFoundForm';
 
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
 const { Meta } = Card;
@@ -14,7 +15,9 @@ const Cards = ({ obj, displayOptions }) => {
   const [profilepic, setProfilePic] = useState();
   const [postImages, setPostImages] = useState([]);
   const [mapPin, setMapPin] = useState(false)
-  const {notify, contextHolder}=useCustomMessage();
+  const { notify, contextHolder } = useCustomMessage();
+  const [showForm, setshowForm] = useState(false);
+
   useEffect(() => {
     const fetchUsername = async () => {
       const { data, error } = await supabase.from("profiles").select("*").eq("id", obj.user_id).single();
@@ -29,47 +32,51 @@ const Cards = ({ obj, displayOptions }) => {
     }
     fetchUsername()
 
-    const fetchDP = async () => {
-      const { data: publicUrl } = await supabase.storage.from('profile-pics').getPublicUrl(`${obj.user_id}/profile.png`);
 
-      if (publicUrl?.publicUrl) {
-        setProfilePic(`${publicUrl.publicUrl}?t=${Date.now()}`);
+    const fetchDP = async () => {
+      const { data, error } = await supabase.from('profiles').select("profile_pic").eq("id", obj.user_id);
+      // console.log(data)
+      if (data?.[0]?.profile_pic) {
+        setProfilePic(`${import.meta.env.VITE_PROFILE_PIC_URL}${data?.[0]?.profile_pic}`);
       }
     }
     fetchDP()
 
     const fetchPostImages = async () => {
-      const urls = [];
-
-      for (let i = 0; i < obj.image_count; i++) {
-        const { data: publicUrl } = await supabase
-          .storage
-          .from('post-pics')
-          .getPublicUrl(`${obj.id}/post_image_${i}.png`);
-
-        if (publicUrl?.publicUrl) {
-          urls.push(`${publicUrl.publicUrl}?t=${Date.now()}`);
-        }
+      const {data, error}=await supabase.storage.from('post-pics').list(`${obj.id}`,{
+        limit:100, offset:0
+      })
+      // console.log(data)
+      if(error){
+       return notify.error(error.message)
       }
+      
+        
+        const urllist=await Promise.all(data.map(async(file, i)=>{
+          let { data: publicUrl }=await supabase.storage.from('post-pics').getPublicUrl(`${obj.id}/${file.name}`)
+          console.log(publicUrl)
+          return `${publicUrl.publicUrl}`;
+        }))
 
-      setPostImages(urls);
+        setPostImages(urllist)
+      
     };
 
     fetchPostImages()
   }, [])
 
-  const handleDelete=async(e)=>{
-    const {error}=await supabase.from("posts").delete().eq("id",obj.id);
-    if(error){
+  const handleDelete = async (e) => {
+    const { error } = await supabase.from("posts").delete().eq("id", obj.id);
+    if (error) {
       notify.error(error.message)
     }
-    else{
+    else {
       notify.success("Post Successfully deleted")
       setTimeout(
-        ()=>{
+        () => {
 
           window.location.reload()
-        },1000
+        }, 1000
       )
     }
   }
@@ -85,21 +92,21 @@ const Cards = ({ obj, displayOptions }) => {
       <div className='w-full flex flex-row justify-between items-center p-3'>
         <div className='flex flex-row gap-2'>
 
-        <Avatar className="border border-gray-200" src={profilepic} />
-        <h1 className='text-lg font-semibold'>{username}</h1>
+          <Avatar className="border border-gray-200" src={profilepic} />
+          <h1 className='text-lg font-semibold'>{username}</h1>
         </div>
-        {displayOptions?
-        <div className='flex flex-row gap-2'>
-          <CheckCircleOutlined className="hover:cursor-pointer "/>
-          {!obj.resolved?
-          <DeleteOutlined className="hover:cursor-pointer" onClick={handleDelete} />:""
-          }
-        </div>:""
+        {displayOptions ?
+          <div className='flex flex-row gap-2'>
+            <CheckCircleOutlined className="hover:cursor-pointer " />
+            {!obj.resolved ?
+              <DeleteOutlined className="hover:cursor-pointer" onClick={handleDelete} /> : ""
+            }
+          </div> : ""
         }
-      
+
       </div>
 
-      <Card 
+      <Card
         className='rounded-none w-full mx-auto'
         cover={
           <Carousel autoplay arrows>
@@ -123,32 +130,32 @@ const Cards = ({ obj, displayOptions }) => {
 
         <div className='flex flex-row justify-between mt-4 gap-8'>
 
-          {obj.type == 'lost'? (
+          {obj.type == 'lost' ? (
             <div>
               {
-                obj.award&&(
+                obj.award && (
 
-              <h1 className='text-lg my-4'>
-                <span className='font-semibold text-gray-700'>Award: </span>{obj.award}
-              </h1>
+                  <h1 className='text-lg my-4'>
+                    <span className='font-semibold text-gray-700'>Award: </span>{obj.award}
+                  </h1>
                 )
               }
-              <Button type="primary">Found</Button>
+              <Button type="primary" onClick={() => setshowForm(true)}>Found</Button>
             </div>
           ) : (
-            <Button type="primary">Claim</Button>
+            <Button type="primary" onClick={() => setshowForm(true)}>Claim</Button>
           )}
 
           <div>
             <h1 className='mt-4 text-xl'>{`${obj.location},${(obj.city) ? obj.city : ""}, ${obj.state}, ${obj.country}, ${(obj.pincode) ? obj.pincode : ""}`}</h1>
             <h1 className='mb-2 text-xl'>{obj.date}</h1>
 
-            <div  className="hover:cursor-pointer " onClick={()=>{
+            <div className="hover:cursor-pointer " onClick={() => {
               setMapPin(true)
             }}>
-            <EnvironmentOutlined className=' text-xl' /><span className='ml-2'>View On Map</span>
+              <EnvironmentOutlined className=' text-xl' /><span className='ml-2'>View On Map</span>
             </div>
-              
+
             <Modal
               open={mapPin}
               title="Click to Set Location on Map"
@@ -158,9 +165,21 @@ const Cards = ({ obj, displayOptions }) => {
               width={1200}
               destroyOnHidden
             >
-              <div style={{ height: "700px" , width:"100%"}}>
-                <MapsCards  lng={(obj.longitude)?obj.longitude:"28.5965800646348"} lat={obj.latitude?obj.latitude:"77.187252046424"}/>
+              <div style={{ height: "700px", width: "100%" }}>
+                <MapsCards lng={(obj.longitude) ? obj.longitude : "28.5965800646348"} lat={obj.latitude ? obj.latitude : "77.187252046424"} />
               </div>
+            </Modal>
+
+            <Modal
+              open={showForm}
+              onCancel={() => { setshowForm(false) }}
+              centered
+              width={1200}
+              destroyOnHidden
+              title="Please fill the form."
+            >
+
+              <ClaimFoundForm status={obj.type} post_id={obj.id} user_id={obj.user_id} />
             </Modal>
           </div>
         </div>

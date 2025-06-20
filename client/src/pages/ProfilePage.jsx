@@ -6,6 +6,7 @@ import { Input, Button, Avatar, Form, Upload, message } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import { useForm } from 'antd/es/form/Form';
 import { useCustomMessage } from '../utils/feedback';
+import convertToPNG from '../utils/convertToPNG';
 
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
 const { Dragger } = Upload;
@@ -105,11 +106,13 @@ function ProfilePage() {
     };
 
     const uploadFile = async (file, userId) => {
-        const filePath = `${userId}/profile.png`;
+        let newfile=await convertToPNG(file);
+        const ext = file.name.split('.').pop().toLowerCase();
+        const filePath = `${userId}/profile_image_${i}.${ext}`;
 
         const { error } = await supabase.storage
             .from('profile-pics')
-            .upload(filePath, file, {
+            .upload(filePath, newfile, {
                 cacheControl: '3600',
                 upsert: true,
             });

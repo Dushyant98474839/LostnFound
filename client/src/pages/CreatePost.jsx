@@ -86,6 +86,8 @@ const CreatePost = () => {
     },
   };
 
+  
+
   const uploadFile = async (imageList, postId) => {
     if (!imageList || imageList.length === 0) {
       return true;
@@ -190,7 +192,7 @@ const CreatePost = () => {
               </Form.Item>
 
 
-              <Form.Item label="Location" name="location">
+              <Form.Item label="Location" name="location" rules={[{ required: true }]}>
                 <Input />
               </Form.Item>
 
