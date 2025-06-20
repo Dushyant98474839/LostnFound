@@ -197,12 +197,12 @@ function ClaimFoundForm({ status, post_id, user_id, type }) {
 
                 <div className='flex flex-col bg-white rounded-2xl shadow-sm p-4 w-[100%] md:w-[35%]'>
 
-                    <h1 className='font-semibold text-center text-lg'>Other users who {status == "found" ? "claimed" : "found"}</h1>
+                    <h1 className='font-semibold text-center text-lg'>Users who {status == "found" ? "claimed" : "found"}</h1>
                     <div className='flex flex-col gap-2'>
                         {usersList.map((obj, i) => {
                             return (
 
-                                <div className='flex flex-row gap-2 items-center p-2 shadow-sm rounded'>
+                                <div className={`flex flex-row gap-2 items-center p-2 shadow-sm rounded ${obj.id==session?.user?.id&&`bg-amber-300`}`}>
                                     <Avatar className="border border-gray-200" src={`${import.meta.env.VITE_PROFILE_PIC_URL}${obj.profile_pic}`}/>
                                     <h1 className='font'>{obj.username}</h1>
 

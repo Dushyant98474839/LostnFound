@@ -32,16 +32,16 @@ export default function Navbar() {
     const navItems = session
         ? [
             { label: "Home", path: "/home" },
-            { label: "About", path: "/about" },
-            { label: "Contact", path:"/contact"},
+            // { label: "About", path: "/about" },
+            // { label: "Contact", path:"/contact"},
             // { label: "Report Lost", path: "/report-lost" },
             // { label: "Report Found", path: "/report-found" },
             { label: "My posts", path: "/my-posts" },
         ]
         : [
             { label: "Home", path: "/" },
-            { label: "About", path: "/about" },
-            { label: "Contact", path:"/contact"},
+            // { label: "About", path: "/about" },
+            // { label: "Contact", path:"/contact"},
             { label: "Login", path: "/login" },
             { label: "Signup", path: "/signup" },
         ];
