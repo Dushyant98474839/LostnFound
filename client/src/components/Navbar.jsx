@@ -39,7 +39,7 @@ export default function Navbar() {
             { label: "My posts", path: "/my-posts" },
         ]
         : [
-            { label: "Home", path: "/" },
+            { label: "Home", path: "/home" },
             // { label: "About", path: "/about" },
             // { label: "Contact", path:"/contact"},
             { label: "Login", path: "/login" },

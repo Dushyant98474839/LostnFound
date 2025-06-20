@@ -34,6 +34,12 @@ function LandingPage() {
       <header className="flex justify-between items-center px-6 py-4 bg-black shadow-md sticky top-0 z-10">
         <h1 className="text-3xl font-bold text-white">Retreiv</h1>
         <div className="space-x-4">
+        <button
+            onClick={() => navigate("/home")}
+            className="bg-none text-white px-4 py-2 rounded hover:bg-gray-800 hover:text-white transition"
+          >
+            Home
+          </button>
           <button
             onClick={() => navigate("/login")}
             className="bg-white text-black px-4 py-2 rounded hover:bg-gray-800 hover:text-white transition"

@@ -18,7 +18,7 @@ import { useAuth } from '../utils/AppContext';
 import { createClient } from '@supabase/supabase-js';
 import { useCustomMessage } from '../utils/feedback';
 import { useNavigate } from 'react-router-dom';
-import {Maps} from '../components/Maps';
+import { Maps } from '../components/Maps';
 
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
 
@@ -86,7 +86,7 @@ const CreatePost = () => {
     },
   };
 
-  
+
 
   const uploadFile = async (imageList, postId) => {
     if (!imageList || imageList.length === 0) {
@@ -122,8 +122,8 @@ const CreatePost = () => {
     try {
       values.user_id = session.user.id;
       values.image_count = imageListPost.length;
-      values.longitude=values.coordinates.lng;
-      values.latitude=values.coordinates.lat;
+      values.longitude = values.coordinates.lng;
+      values.latitude = values.coordinates.lat;
       delete values.coordinates;
       delete values.Image;
       console.log('Form values:', values);
@@ -156,9 +156,13 @@ const CreatePost = () => {
       {contextHolder}
       <Navbar />
       {!isLoggedIn ? (
-        <h1>Please create an account first</h1>
+        <h1 className="text-2xl md:text-2xl font-semibold text-red-600 bg-red-100 border border-red-200 px-6 py-4 rounded-lg shadow-sm text-center w-fit mx-auto my-6">
+          Please create an account first
+        </h1>
+
       ) : !isProfileComplete ? (
-        <h1>Please finish your profile first</h1>
+        <h1 className="text-2xl md:text-2xl font-semibold text-red-600 bg-red-100 border border-red-200 px-6 py-4 rounded-lg shadow-sm text-center w-fit mx-auto my-6">
+          Please finish your profile first</h1>
       ) : (
         <>
           <div className="flex flex-col mt-14 items-center justify-center w-full">
@@ -281,12 +285,12 @@ const CreatePost = () => {
               width={1200}
               destroyOnHidden
             >
-              <div style={{ height: "700px" , width:"100%"}}>
-                <Maps  form={form}/>
+              <div style={{ height: "700px", width: "100%" }}>
+                <Maps form={form} />
               </div>
             </Modal>
 
-            
+
 
           }
         </>
