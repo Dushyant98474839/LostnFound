@@ -12,6 +12,7 @@ import { AuthProvider } from './utils/AppContext'
 import ProfilePage from './pages/ProfilePage'
 import UserPosts from './pages/UserPosts'
 import PostPage from './pages/PostPage'
+import LostPage from './pages/LostPage'
 
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
 
@@ -38,6 +39,7 @@ function App() {
               <Route path="profile" element={<ProfilePage />} />
               <Route path="my-posts" element={<UserPosts />} />
               <Route path="my-posts/:postId" element={<PostPage />} />
+              <Route path="*" element={<LostPage/>}/>
             </Routes>
           </Layout>
         </BrowserRouter>

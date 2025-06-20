@@ -49,7 +49,7 @@ export default function Navbar() {
     return (
         <nav className="bg-black text-white px-8 py-3 flex justify-between items-center">
             <div className="text-2xl font-bold italic">
-                <Link to="/">LostNFound</Link>
+                <Link to="/">Retreiv</Link>
             </div>
 
             <button className="lg:hidden" onClick={() => setMenuOpen(!menuOpen)}>
