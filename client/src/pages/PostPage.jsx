@@ -238,7 +238,7 @@ function PostPage() {
 
                                         <div key={i} className='rounded-lg p-4 shadow-sm flex flex-col gap-2'>
                                             {/* <h2 className='font-semibold mb-2'>User ID: {claim.user_id}</h2> */}
-                                            <p><span className='font-medium'>Location:</span> {claim.location}</p>
+                                            <p><span className='font-medium flex flex-wrap'>Location:</span> {claim.location}</p>
                                             <p><span className='font-medium'>Proof:</span> {claim.proof}</p>
                                             <div className='grid grid-cols-2 md:grid-cols-3 gap-2 mt-2'>
                                                 {claim.images.map((url, idx) => (
