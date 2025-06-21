@@ -52,7 +52,7 @@ function Home() {
   return (
     <div className="h-screen flex flex-col">
       <Navbar />
-      <div className="flex flex-col md:flex-row w-full justify-between gap-4 p-4 flex-grow">
+      <div className="flex flex-col md:flex-row w-full justify-between gap-4 p-4 flex-grow overflow-y-auto md:overflow-hidden">
         <div className='md:hidden flex flex-row justify-center items-center'>
 
           <Radio.Group value={size} onChange={handleSizeChange} >
@@ -68,7 +68,7 @@ function Home() {
             Lost Items
           </h1>
           <Filter2 className="w-full mb-2" />
-          <div className="flex-grow overflow-y-auto bg-white rounded p-2 shadow h-0">
+          <div className="flex-grow md:overflow-y-auto bg-white rounded p-2 shadow h-0">
             <div className='md:grid grid-cols-2 gap-2'>
 
               {postsList
@@ -98,7 +98,7 @@ function Home() {
           </h1>
           <FilterFound className="w-full mb-2 " />
           {/* <div className="flex-grow overflow-y-auto bg-white rounded p-2 shadow h-0"> */}
-          <div className="flex-grow overflow-y-auto bg-white rounded p-2 shadow h-0">
+          <div className="flex-grow md:overflow-y-auto bg-white rounded p-2 shadow h-0">
             <div className='md:grid grid-cols-2 gap-2'>
               {postsList
                 .filter((obj) =>
