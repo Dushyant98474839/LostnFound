@@ -20,7 +20,7 @@ function PostPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalImage, setModalImage] = useState('');
     const [validUser, setvalidUser] = useState(false)
-    const [isResolved, setisResolved]=useState(false)
+    const [isResolved, setisResolved] = useState(false)
     const navigate = useNavigate()
 
     const handleDelete = async (postId, user_id) => {
@@ -84,16 +84,61 @@ function PostPage() {
             if (status == 'lost') {
                 const { error } = await supabase.from("posts").update({ found_by_finally: userId }).eq("id", postId)
                 if (error) return notify.error(error.message)
+                else {
+                    const { data: profileData, error: pointsError } = await supabase
+                        .from("profiles")
+                        .select("points")
+                        .eq("id", userId)
+                        .single();
+
+                    if (pointsError) {
+                        return notify.error(pointsError.message);
+                    }
+
+                    const updatedPoints = (profileData?.points ?? 0) + 1;
+
+                    const { error: updateError } = await supabase
+                        .from("profiles")
+                        .update({ points: updatedPoints })
+                        .eq("id", userId);
+
+                    if (updateError) {
+                        return notify.error(updateError.message);
+                    }
+
+                }
             }
             else {
                 const { error } = await supabase.from("posts").update({ handed_over: userId }).eq("id", postId)
                 if (error) return notify.error(error.message)
+                else {
+                    const { data: profileData, error: pointsError } = await supabase
+                        .from("profiles")
+                        .select("points")
+                        .eq("id", session?.user?.id)
+                        .single();
+
+                    if (pointsError) {
+                        return notify.error(pointsError.message);
+                    }
+
+                    const updatedPoints = (profileData?.points ?? 0) + 1;
+
+                    const { error: updateError } = await supabase
+                        .from("profiles")
+                        .update({ points: updatedPoints })
+                        .eq("id", session?.user?.id);
+
+                    if (updateError) {
+                        return notify.error(updateError.message);
+                    }
+                }
             }
         }
         notify.success("Finished Process, Item resolved!")
-        setTimeout(()=>{
+        setTimeout(() => {
             window.location.reload()
-        },1500)
+        }, 1500)
     }
 
     useEffect(() => {
@@ -158,7 +203,7 @@ function PostPage() {
                 <div className="text-center mt-10 text-gray-500 text-lg">Loading post...</div>
             ) : (
                 <div className='w-[80%] mx-auto'>
-                    <Cards obj={postData} displayOptions={true} details={true} userposts={true} canBeDeleted={isResolved}/>
+                    <Cards obj={postData} displayOptions={true} details={true} userposts={true} canBeDeleted={isResolved} />
 
                     <div className='flex flex-col bg-white rounded-2xl shadow-sm p-4 w-[100%]  md:w-[100%]'>
 
@@ -169,7 +214,7 @@ function PostPage() {
                                 {usersList.map((obj, i) => {
                                     return (
 
-                                        <div className={`flex flex-row ${(obj.id==postData.handed_over|| obj.id==postData.finally_found_by)&&`bg-amber-300`} justify-between items-center p-2 shadow-sm rounded`}>
+                                        <div className={`flex flex-row ${(obj.id == postData.handed_over || obj.id == postData.found_by_finally) && `bg-amber-300`} justify-between items-center p-2 shadow-sm rounded`}>
                                             <div className='flex flex-row gap-2 items-center'>
                                                 <Avatar className="border border-gray-200" src={`${import.meta.env.VITE_PROFILE_PIC_URL}${obj.profile_pic}`} />
                                                 <h1 className='font'>{obj.username}</h1>

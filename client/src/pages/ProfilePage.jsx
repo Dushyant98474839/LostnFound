@@ -19,6 +19,7 @@ function ProfilePage() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [loadingButton, setLoadingButton] = useState(false);
     const [isUsernameTaken, setUsernameTaken] = useState(false);
+    const [points, setPoints]=useState()
 
     const fetchProfile = async () => {
         const { data, error } = await supabase
@@ -29,6 +30,7 @@ function ProfilePage() {
 
         if (data) {
             form.setFieldsValue(data);
+            setPoints(data.points)
         } else if (error) {
             notify.error("Error fetching Profile");
         }
@@ -164,7 +166,10 @@ function ProfilePage() {
                 {session ? (
                     <div className="max-w-xl mx-auto mt-10 bg-white shadow-md p-6 rounded-xl">
                         <h2 className="text-xl font-semibold mb-6">Edit Profile</h2>
+                        <div className='flex flex-col gap-4 w-full items-center mb-6 justify-center'>
                         <Avatar className="border border-gray-200 mb-6" size={100} src={pubUrl} />
+                        <h1 className='font-semibold bg-amber-300 p-1 mb-4 rounded'>{`Points: ${points}`}</h1>
+                            </div>
                         <Form layout="vertical" form={form} onFinish={handleFinish}>
                             <Form.Item label="Username" name="username" rules={[{ required: true }]} message={(isUsernameTaken)?"username taken":""}>
                                 <Input onChange={handleUsernameChange} />
