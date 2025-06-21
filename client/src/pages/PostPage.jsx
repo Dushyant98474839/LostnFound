@@ -210,7 +210,7 @@ function PostPage() {
                         <h1 className='font-semibold text-center text-lg'>Other users who {status == "found" ? "claimed" : "found"}</h1>
 
                         <div className='flex flex-col md:flex-row gap-2 w-full items-center'>
-                            <div className='flex flex-col gap-2 w-[30%]'>
+                            <div className='w-[100%] flex flex-col gap-2 w-[30%]'>
                                 {usersList.map((obj, i) => {
                                     return (
 

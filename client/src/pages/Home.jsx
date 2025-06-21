@@ -8,6 +8,7 @@ import { useCustomMessage } from '../utils/feedback';
 import { useAuth } from '../utils/AppContext';
 import { useSearch } from '../utils/SearchContext';
 import FilterFound from '../components/FilterFound';
+import { Radio } from 'antd';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -25,6 +26,8 @@ function Home() {
     foundState,
     foundCity } = useSearch();
 
+  const [showOp, setShowOp] = useState()
+
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -41,21 +44,32 @@ function Home() {
     fetchPosts();
   }, []);
 
-
+  const [size, setSize] = useState('lost');
+  const handleSizeChange = e => {
+    setSize(e.target.value);
+  };
 
   return (
     <div className="h-screen flex flex-col">
       <Navbar />
       <div className="flex flex-col md:flex-row w-full justify-between gap-4 p-4 flex-grow">
+        <div className='md:hidden flex flex-row justify-center items-center'>
 
+          <Radio.Group value={size} onChange={handleSizeChange} >
+            <Radio.Button value="lost">Lost</Radio.Button>
+            <Radio.Button value="found">Found</Radio.Button>
+          </Radio.Group>
+        </div>
         {/* lost items */}
-        <div className="w-full md:w-1/2 flex flex-col h-full">
-          <h1 className="text-center font-semibold border border-gray-800 p-2 mb-2">
+        <div
+          className={`w-full md:w-1/2 flex flex-col h-full ${size !== 'lost' ? 'hidden md:flex' : 'flex'}`}
+        >
+          <h1 className="hidden md:block text-center font-semibold border border-gray-800 p-2 mb-2">
             Lost Items
           </h1>
           <Filter2 className="w-full mb-2" />
           <div className="flex-grow overflow-y-auto bg-white rounded p-2 shadow h-0">
-            <div className='grid grid-cols-2'>
+            <div className='md:grid grid-cols-2 gap-2'>
 
               {postsList
                 .filter((obj) =>
@@ -76,14 +90,16 @@ function Home() {
         </div>
 
         {/* found items */}
-        <div className="w-full md:w-1/2 flex flex-col h-full">
-          <h1 className="text-center font-semibold border border-gray-800 p-2 mb-2">
+        <div
+          className={`w-full md:w-1/2 flex flex-col h-full ${size !== 'found' ? 'hidden md:flex' : 'flex'}`}
+        >
+          <h1 className="hidden md:block  text-center font-semibold border border-gray-800 p-2 mb-2">
             Found Items
           </h1>
           <FilterFound className="w-full mb-2 " />
           {/* <div className="flex-grow overflow-y-auto bg-white rounded p-2 shadow h-0"> */}
           <div className="flex-grow overflow-y-auto bg-white rounded p-2 shadow h-0">
-            <div className='grid grid-cols-2 gap-2'>
+            <div className='md:grid grid-cols-2 gap-2'>
               {postsList
                 .filter((obj) =>
                   obj.type === 'found' &&
@@ -99,7 +115,6 @@ function Home() {
                 ))}
 
             </div>
-            {/* </div> */}
           </div>
         </div>
       </div>

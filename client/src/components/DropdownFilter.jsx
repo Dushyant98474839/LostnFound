@@ -67,10 +67,13 @@ export function DropdownFilter({ type = 'lost' }) {
         selectable: true,
         defaultSelectedKeys: ['0'],
         onClick: handleMenuClick,
-      }}
+      }
+      
+    }
+      
     >
-      <Typography.Link onClick={(e) => e.preventDefault()}>
-        <Space>
+      <Typography.Link className='min-w-[10%] mx-4' onClick={(e) => e.preventDefault()} >
+        <Space >
           {currentCategory}
           <DownOutlined />
         </Space>
@@ -118,6 +121,7 @@ export function CountryDropdown({ type = 'lost' }) {
       filterOption={(input, option) =>
         option.label.toLowerCase().includes(input.toLowerCase())
       }
+      style={{fontSize:`0`}}
     />
   );
 }

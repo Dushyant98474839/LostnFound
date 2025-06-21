@@ -76,12 +76,13 @@ export default function Navbar() {
 
 
             {menuOpen && (
-                <ul className="lg:hidden absolute top-16 left-0 w-full bg-black px-4 py-2 flex flex-col gap-3">
+                <ul className="lg:hidden absolute top-14 shadow-2xl left-0 w-full z-10 bg-black px-8 py-4 flex flex-col gap-3">
                     <div className="flex flex-row gap-4">
 
-                    <PlusSquareOutlined className="text-xl hover:cursor-pointer"/>
-                    <UserOutlined className="hover:cursor-pointer" />
+                <PlusSquareOutlined className="text-xl hover:cursor-pointer" onClick={()=>navigate('/createpost')}/>
                     <BellOutlined className="hover:cursor-pointer" />
+                    <UserOutlined className="hover:cursor-pointer" onClick={()=>navigate('/profile')} />
+                        <LogoutOutlined className="hover:cursor-pointer"  onClick={handleSignOut}/>
                     </div>
                     {navItems.map((item) => (
                         <li key={item.path}>

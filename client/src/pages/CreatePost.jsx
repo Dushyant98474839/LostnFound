@@ -168,11 +168,11 @@ const CreatePost = () => {
           <div className="flex flex-col mt-14 items-center justify-center w-full">
             <h1 className="text-xl mb-10 font-semibold">Please Enter the Details</h1>
             <Form
-              className="shadow-md"
+              className="shadow-md "
               {...formItemLayout}
               form={form}
               variant={'outlined'}
-              style={{ padding: 15, borderRadius: 10, width: '50%' }}
+              style={{ padding: 15, borderRadius: 10, width: '80%'}}
               onFinish={handleSubmit}
             >
               <Form.Item label="Condition" name="type" rules={[{ required: true }]}>
