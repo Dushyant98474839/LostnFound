@@ -31,7 +31,7 @@ function UserPosts() {
   {contextHolder}
   <Navbar />
 
-  <div className="mx-8 mt-6">
+  <div className="md:mx-8 mt-6">
     <h1 className="text-2xl font-bold mb-4 text-gray-800 text-center">My Posts</h1>
 
     <div className="bg-white rounded-lg p-4 shadow-md">
