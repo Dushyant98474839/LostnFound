@@ -21,6 +21,7 @@ const Cards = ({ obj, displayOptions, details, userposts, canBeDeleted }) => {
   const [showForm, setshowForm] = useState(false);
   const navigate = useNavigate()
   const { session, isLoggedIn, isProfileComplete } = useAuth();
+  const [fetchingImage, isfetchingImage]=useState(false)
 
   useEffect(() => {
     const fetchUsername = async () => {
@@ -38,6 +39,7 @@ const Cards = ({ obj, displayOptions, details, userposts, canBeDeleted }) => {
 
 
     const fetchDP = async () => {
+
       const { data, error } = await supabase.from('profiles').select("profile_pic").eq("id", obj.user_id);
       // console.log(data)
       if (data?.[0]?.profile_pic) {
@@ -47,6 +49,7 @@ const Cards = ({ obj, displayOptions, details, userposts, canBeDeleted }) => {
     fetchDP()
 
     const fetchPostImages = async () => {
+      isfetchingImage(true)
       const { data, error } = await supabase.storage.from('post-pics').list(`${obj.id}`, {
         limit: 100, offset: 0
       })
@@ -63,11 +66,11 @@ const Cards = ({ obj, displayOptions, details, userposts, canBeDeleted }) => {
       }))
 
       setPostImages(urllist)
-
+      isfetchingImage(false)
     };
 
     fetchPostImages()
-  }, [])
+  }, [obj])
 
   const handleDelete = async (e) => {
     const { error } = await supabase.from("posts").delete().eq("id", obj.id);
@@ -118,7 +121,7 @@ const Cards = ({ obj, displayOptions, details, userposts, canBeDeleted }) => {
         className='rounded-none w-full mx-auto'
         cover={
           <Carousel autoplay arrows>
-            {postImages && postImages.map((src, index) => (
+            {!fetchingImage&&postImages && postImages.map((src, index) => (
               <img
                 key={index}
                 src={src}

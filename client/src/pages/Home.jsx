@@ -6,6 +6,8 @@ import { createClient } from "@supabase/supabase-js";
 import useNotification from 'antd/es/notification/useNotification';
 import { useCustomMessage } from '../utils/feedback';
 import { useAuth } from '../utils/AppContext';
+import { useSearch } from '../utils/SearchContext';
+import FilterFound from '../components/FilterFound';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -13,12 +15,15 @@ const supabase = createClient(
 );
 
 
-
-
 function Home() {
-  const [postsList, setPostsList]=useState([{}]);
+  const [postsList, setPostsList] = useState([{}]);
   const { notify, contextHolder } = useCustomMessage();
-  const {session}=useAuth();
+  const { session } = useAuth();
+  const { category, searchQuery, country, state, city, foundCategory,
+    foundSearchQuery,
+    foundCountry,
+    foundState,
+    foundCity } = useSearch();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -34,15 +39,15 @@ function Home() {
       }
     };
     fetchPosts();
-
-    
   }, []);
+
+
 
   return (
     <div className="h-screen flex flex-col">
       <Navbar />
       <div className="flex flex-col md:flex-row w-full justify-between gap-4 p-4 flex-grow">
-        
+
         {/* lost items */}
         <div className="w-full md:w-1/2 flex flex-col h-full">
           <h1 className="text-center font-semibold border border-gray-800 p-2 mb-2">
@@ -52,33 +57,49 @@ function Home() {
           <div className="flex-grow overflow-y-auto bg-white rounded p-2 shadow h-0">
             <div className='grid grid-cols-2'>
 
-            {postsList.map((obj, i)=>{
-              if(obj.type=='lost'&&!obj.resolved)
-                return <Cards key={i} obj={obj} details={obj.user_id==session?.user?.id}/>
-            })}
+              {postsList
+                .filter((obj) =>
+                  obj.type === 'lost' &&
+                  !obj.resolved &&
+                  (category === 'All' || obj.category?.toLowerCase() === category.toLowerCase()) &&
+                  (searchQuery === '' || obj.title?.toLowerCase().includes(searchQuery.toLowerCase()) || obj.description?.toLowerCase().includes(searchQuery.toLowerCase())) &&
+                  (country === undefined || obj.country === country) &&
+                  (state === undefined || obj.state === state) &&
+                  (city === undefined || obj.city === city)
+                )
+                .map((obj, i) => (
+                  <Cards key={i} obj={obj} details={obj.user_id === session?.user?.id} />
+                ))}
+
             </div>
           </div>
         </div>
-        
+
         {/* found items */}
         <div className="w-full md:w-1/2 flex flex-col h-full">
           <h1 className="text-center font-semibold border border-gray-800 p-2 mb-2">
             Found Items
           </h1>
-          <Filter2 className="w-full mb-2 " />
+          <FilterFound className="w-full mb-2 " />
           {/* <div className="flex-grow overflow-y-auto bg-white rounded p-2 shadow h-0"> */}
-            <div className="flex-grow overflow-y-auto bg-white rounded p-2 shadow h-0">
-              <div className='grid grid-cols-2 gap-2'>
+          <div className="flex-grow overflow-y-auto bg-white rounded p-2 shadow h-0">
+            <div className='grid grid-cols-2 gap-2'>
+              {postsList
+                .filter((obj) =>
+                  obj.type === 'found' &&
+                  !obj.resolved &&
+                  (foundCategory === 'All' || obj.category?.toLowerCase() === foundCategory.toLowerCase()) &&
+                  (foundSearchQuery === '' || obj.title?.toLowerCase().includes(foundSearchQuery.toLowerCase()) || obj.description?.toLowerCase().includes(foundSearchQuery.toLowerCase())) &&
+                  (foundCountry === undefined || obj.country === foundCountry) &&
+                  (foundState === undefined || obj.state === foundState) &&
+                  (foundCity === undefined || obj.city === foundCity)
+                )
+                .map((obj, i) => (
+                  <Cards key={obj.id || i} obj={obj} details={obj.user_id === session?.user?.id} />
+                ))}
 
-            {postsList.map((obj, i)=>{
-              if(obj.type=='found'&&!obj.resolved){
-                // console.log("ffffffff",obj)
-                return <Cards key={i} obj={obj} displayOptions={false} details={obj.user_id==session?.user?.id} />
-              }
-              
-            })}
             </div>
-          {/* </div> */}
+            {/* </div> */}
           </div>
         </div>
       </div>

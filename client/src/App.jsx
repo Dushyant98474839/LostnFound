@@ -13,6 +13,7 @@ import ProfilePage from './pages/ProfilePage'
 import UserPosts from './pages/UserPosts'
 import PostPage from './pages/PostPage'
 import LostPage from './pages/LostPage'
+import { SearchProvider } from './utils/SearchContext'
 
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
 
@@ -29,12 +30,13 @@ function App() {
     <>
       <AuthProvider>
         <BrowserRouter>
+              <SearchProvider>
           <Layout>
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="login" element={<AuthPage />} />
               <Route path="signup" element={<AuthPage />} />
-              <Route path="home" element={<Home />} />
+                <Route path="home" element={<Home />} />
               <Route path="createpost" element={<CreatePost />} />
               <Route path="profile" element={<ProfilePage />} />
               <Route path="my-posts" element={<UserPosts />} />
@@ -42,6 +44,7 @@ function App() {
               <Route path="*" element={<LostPage/>}/>
             </Routes>
           </Layout>
+              </SearchProvider>
         </BrowserRouter>
       </AuthProvider>
     </>
